@@ -41,9 +41,7 @@ vector<size_t> PrecomputeHashes(const Data& input)
     ull sizeOfP = input.pattern.size();
     vector<size_t> H(sizeOfT - sizeOfP + 1);
     H[sizeOfT - sizeOfP] = Polyhash_func(t.substr(sizeOfT - sizeOfP, sizeOfP));
-    // H[sizeOfT - sizeOfP - 1] = Polyhash_func(t.substr(sizeOfT - sizeOfP - 1, sizeOfT - 2));
 
-     // cout << H[sizeOfT - sizeOfP - 1] << endl;
     ull y = 1;
 
     for (long long int i = 0; i < sizeOfP; i++)
@@ -51,11 +49,11 @@ vector<size_t> PrecomputeHashes(const Data& input)
         y = (((y * multiplier) % prime) + prime) % prime;
     }
 
-    //cout << "Begin: " << endl;
+    
     for (long long int i = sizeOfT - sizeOfP - 1; i >= 0; --i)
     {
         H[i] = (((multiplier * H[i + 1] + t[i] - (y * t[i + sizeOfP])) % prime) + prime) % prime;
-        //    cout << H[i] << endl;
+        
     }
 
     return H;
@@ -74,48 +72,29 @@ void print_occurrences(const std::vector<ull>& output)
         std::cout << output[i] << " ";
     std::cout << "\n";
 }
-/*
-std::vector<int> get_occurrences(const Data& input) {
-    const string& s = input.pattern, t = input.text;
-    std::vector<int> ans;
-    for (size_t i = 0; i + s.size() <= t.size(); ++i)
-        if (t.substr(i, s.size()) == s)
-            ans.push_back(i);
-    return ans;
-}
-*/
+
 
 std::vector<ull> get_occurrences(const Data& input)
 {
     const string& s = input.pattern, t = input.text;
     size_t hashPattern = Polyhash_func(s);
 
-    //  cout << "HashPattern: "<<hashPattern << endl;
     vector<size_t> hashText(t.size());
 
     hashText = PrecomputeHashes(input);
 
-    //    for (size_t i = 0; i < hashText.size(); i++)
-     //   {
-     //       cout << "hash " << i << " " << hashText[i] << endl;
-      //  }
+
 
     std::vector<ull> ans;
 
     for (size_t i = 0; i <= hashText.size(); i++)
     {
-        //   cout << "HOO" << endl;
+       
         if (hashText[i] == hashPattern)
         {
             if (t.substr(i, s.size()) == s)
                 ans.push_back(i);
 
-            //    cout << "HpppOO" << endl;
-             //   if (match(&t[i],s))
-              //  {
-             //       cout << "Hey" << endl;
-              //      ans.push_back(i);
-              //  }
 
 
         }
